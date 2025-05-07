@@ -1,0 +1,11 @@
+# ملفات ومجلدات يجب تجاهلها عند بناء صورة Docker
+node_modules
+.next
+.git
+.github
+.vscode
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+README.md
+.gitignore

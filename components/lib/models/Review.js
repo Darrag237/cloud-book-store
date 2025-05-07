@@ -1,0 +1,34 @@
+import mongoose from "mongoose"
+
+// تعريف مخطط التقييم
+const reviewSchema = new mongoose.Schema({
+  bookId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Book",
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+  },
+  comment: {
+    type: String,
+    trim: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+})
+
+// إنشاء النموذج إذا لم يكن موجوداً
+const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema)
+
+export default Review

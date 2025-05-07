@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # خدمة تطبيق Next.js
+  app:
+    container_name: bookstore-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017/bookstore}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_key_here}
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - mongo
+    networks:
+      - bookstore-network
+
+  # خدمة قاعدة البيانات MongoDB
+  mongo:
+    container_name: bookstore-mongo
+    image: mongo:6.0
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+      - ./init-mongo:/docker-entrypoint-initdb.d
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${MONGO_DB:-bookstore}
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
